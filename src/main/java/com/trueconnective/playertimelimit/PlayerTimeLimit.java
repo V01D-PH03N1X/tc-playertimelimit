@@ -66,13 +66,6 @@ public class PlayerTimeLimit extends JavaPlugin implements Listener {
         // register created commands
         CommandMap commandMap = Bukkit.getCommandMap();
         commandMap.register("skull", new PlayerTimeResetCommand());
-
-        // ensure every player is treated the same
-        Bukkit.getScheduler().runTask(this, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                playerManager.startActionBarTask(player);
-            }
-        });
     }
 
     @Override
@@ -94,8 +87,9 @@ public class PlayerTimeLimit extends JavaPlugin implements Listener {
                 .append(Component.text("Server!").decoration(TextDecoration.BOLD, false))
                 .build();
 
-
         event.getPlayer().sendMessage(welcomeMessage1);
+
+        playerManager.startActionBarTask(event.getPlayer());
     }
 
     @EventHandler

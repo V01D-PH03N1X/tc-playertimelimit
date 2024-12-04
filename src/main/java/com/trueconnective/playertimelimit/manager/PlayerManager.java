@@ -11,6 +11,7 @@ import com.trueconnective.playertimelimit.handler.DatabaseHandler;
 // Kyori Adventures imports
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 // Bukkit imports
@@ -95,16 +96,21 @@ public class PlayerManager {
 
     // Method for starting the actionbar update
     public void startActionBarTask(Player player) {
+        PlayerTimeLimit.logger.info("Starting ActionBar task for player: {}", player.getName());
         // Recurring task that is performed every second
         Bukkit.getScheduler().runTaskTimer(PlayerTimeLimit.getInstance(), () -> {
             // Calculate the remaining time
             int remainingTime = getRemainingTime(player);
 
             // Update actionbar
-            String timeText = formatTime(remainingTime);
+            final TextComponent timeText = Component.text()
+                    .content("Verbleibende Zeit: ")
+                    .color(TextColor.color(0xEDEFE5))
+                    .append(Component.text(formatTime(remainingTime)).decoration(TextDecoration.BOLD, true).color(TextColor.color(0x3F9EFF)))
+                    .build();
             sendActionBar(player, timeText);
 
-        }, 0L, 20L);  // 20L bedeutet, dass die Aufgabe jede Sekunde ausgeführt wird
+        }, 0L, 20L);  // 20L means 20 ticks, which is 1 second
     }
 
     // Example of how the remaining time (in seconds) could be retrieved
@@ -124,7 +130,7 @@ public class PlayerManager {
     }
 
     // Method for sending an actionbar message to the player
-    public void sendActionBar(Player player, String message) {
+    public void sendActionBar(Player player, TextComponent message) {
         player.sendActionBar(message);  // This method is integrated directly into Paper
     }
 
