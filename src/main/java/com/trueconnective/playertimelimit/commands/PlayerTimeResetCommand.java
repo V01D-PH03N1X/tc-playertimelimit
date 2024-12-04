@@ -1,36 +1,43 @@
+//********************************************************************************************
+// Author:      TrueConnective, V01D-PH03N1X (PinguBasti)
+// Project:     Player Time Limit
+// Description: Kicks the player based on permissionGroup after a certain amount of time.
+//********************************************************************************************
 package com.trueconnective.playertimelimit.commands;
 
 import com.trueconnective.playertimelimit.PlayerTimeLimit;
 import com.trueconnective.playertimelimit.manager.PlayerManager;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ResetPlayTimeCommand implements CommandExecutor {
-    private PlayerManager playerManager = PlayerTimeLimit.playerManager;
+public class PlayerTimeResetCommand extends BukkitCommand {
+    private final PlayerManager playerManager = PlayerTimeLimit.playerManager;
+    public PlayerTimeResetCommand() {
+        super("playertimereset");
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        // Überprüfen, ob ein Zielspieler angegeben wurde
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        // Check if target player is given
         if (args.length == 0 && !(sender instanceof Player)) {
             sender.sendMessage("Du musst einen Zielspieler angeben, wenn du diesen Befehl von der Konsole aus ausführst.");
             return true;
         }
 
-        // Zielspieler bestimmen
+        // set targetplayer
         OfflinePlayer targetPlayer = null;
         if (args.length > 0) {
-            // Spieler aus dem Argument laden (online oder offline)
+            // Load player from argument
             targetPlayer = sender.getServer().getOfflinePlayer(args[0]);
             if (!targetPlayer.hasPlayedBefore() && !targetPlayer.isOnline()) {
                 sender.sendMessage("Spieler \"" + args[0] + "\" wurde nicht gefunden oder hat den Server noch nie betreten.");
                 return true;
             }
         } else if (sender instanceof Player player) {
-            // Kein Argument, Sender ist der Spieler
+            // No Argument sender is the Player
             targetPlayer = player;
         }
 
@@ -39,12 +46,11 @@ public class ResetPlayTimeCommand implements CommandExecutor {
             return true;
         }
 
-        // Spielerzeit zurücksetzen
+        // reset playtime
         playerManager.resetPlayerPlayTime(targetPlayer);
 
-        // Bestätigung ausgeben
+        // Output a response
         sender.sendMessage("Die Spielzeit von " + targetPlayer.getName() + " wurde zurückgesetzt.");
         return true;
     }
-
 }

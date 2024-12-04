@@ -6,7 +6,7 @@
 package com.trueconnective.playertimelimit;
 
 // Internal Imports
-import com.trueconnective.playertimelimit.commands.ResetPlayTimeCommand;
+import com.trueconnective.playertimelimit.commands.PlayerTimeResetCommand;
 import com.trueconnective.playertimelimit.handler.DatabaseHandler;
 import com.trueconnective.playertimelimit.manager.PlayerManager;
 // Kyori Adveture Imports
@@ -16,6 +16,8 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 // Bukkit Imports
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -27,11 +29,19 @@ import org.slf4j.Logger;
  * The Plugin MainClass here are Events Located.
  */
 public class PlayerTimeLimit extends JavaPlugin implements Listener {
+    private static PlayerTimeLimit instance;
+
     public static PlayerManager playerManager;
+    public static PlayerTimeLimit getInstance() {
+        return instance;
+    }
     public static Logger logger;
 
     @Override
     public void onEnable() {
+        synchronized (this) {
+            instance = this;
+        }
         // Get and Set the plugin Logger.
         logger = getSLF4JLogger();
 
@@ -42,17 +52,18 @@ public class PlayerTimeLimit extends JavaPlugin implements Listener {
         // Create PlayerManager Object for handling Join & Quit Event and Kick Action after the maximum playing time is reached.
         playerManager = new PlayerManager(dbHandler);
 
-        // register every used Event.
-        getServer().getPluginManager().registerEvents(this, this);
-        // register created commands
-        getCommand("playtimereset").setExecutor(new ResetPlayTimeCommand());
-
         // Start the Check for the player Kick
         playerManager.checkAndKickPlayers(this);
 
         // Reset timestamp daily
         dbHandler.resetDailyTimes();
         getServer().getScheduler().runTaskTimerAsynchronously(this, dbHandler::resetDailyTimes, 0L, 20L * 60 * 60 * 24);
+
+        // register every used Event.
+        getServer().getPluginManager().registerEvents(this, this);
+        // register created commands
+        CommandMap commandMap = Bukkit.getCommandMap();
+        commandMap.register("skull", new PlayerTimeResetCommand());
     }
 
     @Override

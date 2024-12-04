@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.trueconnective'
-version = '1.6.4-SNAPSHOT'
+version = '1.6.6-SNAPSHOT'
 
 repositories {
     mavenCentral()

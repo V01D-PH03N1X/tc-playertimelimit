@@ -1,5 +1,5 @@
 name: PlayerTimeLimit
-version: '1.6.4-SNAPSHOT'
+version: '1.6.6-SNAPSHOT'
 main: com.trueconnective.playertimelimit.PlayerTimeLimit
 api-version: '1.21'
 prefix: PTL
@@ -22,7 +22,7 @@ permissions :
 commands:
   playtimereset:
     description: "Reset playtime of a specific player"
-    usage: /resetplaytime [player]
+    usage: /playtimereset [player]
     aliases: [ptr, playtimereset]
-    permission: trueconnective.playtime.reset.player
+    permission: trueconnective.playtimereset
     permission-message: "Du hast leider keine Berechtigung diesen Command zu nutzen. Bitte wende dich an einen Administrator."
