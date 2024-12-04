@@ -1,0 +1,28 @@
+name: PlayerTimeLimit
+version: '1.6.4-SNAPSHOT'
+main: com.trueconnective.playertimelimit.PlayerTimeLimit
+api-version: '1.21'
+prefix: PTL
+load: STARTUP
+authors: [ V01D-PH03N1X, TrueConnective, PinguBasti ]
+description: Ein einfaches Plugin, welches bestimmte PermissionGroups nach bestimmten Zeiten kickt.
+permissions :
+  trueconnective.playtime.administrator:
+    description: "Permission for Admin Playtime (NoKick)"
+    default: false
+  trueconnective.playtime.creator:
+    description: "Permission for Creator Playtime (Kick after 3 Hours)"
+    default: false
+  trueconnective.playtime.viewer:
+    description: "Permission for Viewer Playtime (Kick after 1 Hour)"
+    default: true
+  trueconnective.playtime.reset.player:
+    description: "Permission for resetting Playtime of a specific player"
+    default: true
+commands:
+  playtimereset:
+    description: "Reset playtime of a specific player"
+    usage: /resetplaytime [player]
+    aliases: [ptr, playtimereset]
+    permission: trueconnective.playtime.reset.player
+    permission-message: "Du hast leider keine Berechtigung diesen Command zu nutzen. Bitte wende dich an einen Administrator."
