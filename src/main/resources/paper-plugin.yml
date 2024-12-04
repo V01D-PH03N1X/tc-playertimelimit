@@ -1,5 +1,5 @@
 name: PlayerTimeLimit
-version: '1.6.6-SNAPSHOT'
+version: '1.6.7-SNAPSHOT'
 main: com.trueconnective.playertimelimit.PlayerTimeLimit
 api-version: '1.21'
 prefix: PTL

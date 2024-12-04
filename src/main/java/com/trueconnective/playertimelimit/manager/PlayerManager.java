@@ -6,6 +6,7 @@
 package com.trueconnective.playertimelimit.manager;
 
 // Internal imports
+import com.trueconnective.playertimelimit.PlayerTimeLimit;
 import com.trueconnective.playertimelimit.handler.DatabaseHandler;
 // Kyori Adventures imports
 import net.kyori.adventure.text.Component;
@@ -91,4 +92,40 @@ public class PlayerManager {
         UUID uuid = player.getUniqueId();
         dbHandler.resetPlayTime(uuid.toString());
     }
+
+    // Method for starting the actionbar update
+    public void startActionBarTask(Player player) {
+        // Recurring task that is performed every second
+        Bukkit.getScheduler().runTaskTimer(PlayerTimeLimit.getInstance(), () -> {
+            // Calculate the remaining time
+            int remainingTime = getRemainingTime(player);
+
+            // Update actionbar
+            String timeText = formatTime(remainingTime);
+            sendActionBar(player, timeText);
+
+        }, 0L, 20L);  // 20L bedeutet, dass die Aufgabe jede Sekunde ausgeführt wird
+    }
+
+    // Example of how the remaining time (in seconds) could be retrieved
+    public int getRemainingTime(Player player) {
+        UUID uuid = player.getUniqueId();
+        long joinTime = playerJoinTimes.getOrDefault(uuid, System.currentTimeMillis());
+        long timeSpent = (System.currentTimeMillis() - joinTime) / 1000;
+
+        return 3600 - (int) timeSpent;
+    }
+
+    // Format time as HH:MM
+    public String formatTime(int seconds) {
+        int hours = seconds / 3600; // 1 Hour = 3600 seconds
+        int minutes = (seconds % 3600) / 60; // Remaining minutes after the hours
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    // Method for sending an actionbar message to the player
+    public void sendActionBar(Player player, String message) {
+        player.sendActionBar(message);  // This method is integrated directly into Paper
+    }
+
 }

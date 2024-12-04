@@ -18,11 +18,13 @@ import net.kyori.adventure.text.format.TextDecoration;
 // Bukkit Imports
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
+// Other imports
 import org.slf4j.Logger;
 
 /**
@@ -64,6 +66,13 @@ public class PlayerTimeLimit extends JavaPlugin implements Listener {
         // register created commands
         CommandMap commandMap = Bukkit.getCommandMap();
         commandMap.register("skull", new PlayerTimeResetCommand());
+
+        // ensure every player is treated the same
+        Bukkit.getScheduler().runTask(this, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                playerManager.startActionBarTask(player);
+            }
+        });
     }
 
     @Override
@@ -94,4 +103,5 @@ public class PlayerTimeLimit extends JavaPlugin implements Listener {
         // Handle the player quit event and stop counting the remaining playertime.
         playerManager.handlePlayerQuit(event.getPlayer());
     }
+
 }
